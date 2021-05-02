@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>20-20-20</title>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' 'unsafe-inline';"
+    />
+  </head>
+  <body>
+    <h1>20-20-20</h1>
+    <p>Give your eyes a break every 20 minutes</p>
+    <h2 id="focusCountdown">20:00</h2>
+
+    <div id="breakModal" class="fullscreen hidden">
+      <div class="modal">
+        <h1>Look away</h1>
+        <h2 id="breakCountdown">00:20</h2>
+        <h4>
+          Give your eyes a break. For 20 seconds, focus on something at least 20
+          feet (6 meters) away.
+        </h4>
+      </div>
+    </div>
+
+    <style>
+      :root {
+        --spacing: 1rem;
+        --gray: rgb(36, 37, 45);
+        --white: rgb(255, 255, 255);
+        --body-text-size: 14px;
+      }
+      /* START Make app feel native to MacOS */
+      html {
+        font-size: var(--body-text-size);
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont;
+      }
+      *,
+      a,
+      button {
+        cursor: default;
+        user-select: none;
+      }
+      body {
+        -webkit-app-region: drag;
+      }
+      /* END Make app feel native to MacOS */
+
+      body {
+        background-color: var(--gray);
+        color: var(--white);
+        position: relative;
+      }
+      .fullscreen {
+        background-color: var(--gray);
+        padding: var(--spacing);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+      .fullscreen {
+        display: block;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+      }
+      .modal {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+
+      #focusCountdown,
+      #breakCountdown {
+        visibility: hidden;
+      }
+    </style>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>

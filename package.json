@@ -1,0 +1,21 @@
+{
+  "name": "twenty20",
+  "version": "0.1.0",
+  "description": "forces you to give your eyes a break every 20 minutes",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --ignore-path .gitignore . && prettier --config .prettierrc.json --ignore-path .gitignore --check \"**/*.{js,json,ts,md,html}\"",
+    "fix": "eslint --ignore-path .gitignore --fix . && prettier --config .prettierrc.json --ignore-path .gitignore --write \"**/*.{js,json,ts,md,html}\""
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^12.0.6",
+    "eslint": "^7.25.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "prettier": "^2.2.1"
+  }
+}
