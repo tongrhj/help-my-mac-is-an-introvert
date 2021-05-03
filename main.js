@@ -24,8 +24,9 @@ let win; /* BrowserWindow | null */
 
 const createWindow = () => {
   win = new BrowserWindow({
-    show: false,
     backgroundColor: "rgb(36, 37, 45)", // --gray
+    titleBarStyle: "hiddenInset",
+    transparent: true,
     webPreferences: {
       contextIsolation: true,
       enableRemoteModule: false,
@@ -39,13 +40,9 @@ const createWindow = () => {
     win.hide();
   });
 
-  win.on("close", () => {
-    win.hide();
-  });
-
-  win.once("ready-to-show", () => {
-    win.show();
-  });
+  // win.once("ready-to-show", () => {
+  //   win.show();
+  // });
 
   win.loadFile("index.html");
 };
