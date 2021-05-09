@@ -15,6 +15,8 @@
     window.electron.send("NOTIFY_BREAK_STARTING")
   };
 
+  const doneSound = new Audio('./assets/ping.wav')
+
   const startFocusRound /* number */ = () => {
     const roundDuration = /* 20 * 60 * 1000 */ 20 * 1000;
     console.log("Start focus round");
@@ -55,6 +57,8 @@
 
         console.log("Break Round timeout");
         currentRounds = [startFocusRound()];
+
+        doneSound.play()
       }, roundDuration),
     ];
   };
