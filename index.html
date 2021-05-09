@@ -9,15 +9,15 @@
     />
   </head>
   <body>
-    <div class="content">
+    <!-- <div class="content">
       <h1>20-20-20</h1>
       <h2>Rest your eyes every 20 minutes</h2>
       <h3>You may minimize this window. We'll let you know when it's time to take a break.</h3>
       <h2 id="focusCountdown">20:00</h2>
-    </div>
+    </div> -->
 
-    <div id="breakModal" class="fullscreen hidden">
-      <div class="modal">
+    <div id="breakModal" class="modal fullscreen">
+      <div>
         <h1>Rest your eyes</h1>
         <h2 id="breakCountdown">00:20</h2>
         <h4>
@@ -77,7 +77,8 @@
         width: 100%;
         height: 100%;
       }
-      .content, .modal {
+      .content,
+      .modal {
         display: flex;
         flex-direction: column;
         justify-content: center;

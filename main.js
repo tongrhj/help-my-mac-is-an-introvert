@@ -1,77 +1,80 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, Menu, Tray, Notification, nativeImage, ipcMain } = require("electron");
 const path = require("path");
-const { FULLSCREEN_BREAK, CLOSE_BREAK } = require("./common");
+const { FULLSCREEN_BREAK, CLOSE_BREAK, NOTIFY_BREAK_STARTING } = require("./common");
 
-let win; /* BrowserWindow | null */
-// let tray /* Tray | null */
+let win; /* InstanceType<BrowserWindow> | null */
+let tray; /* InstanceType<Tray> | null */
+let notification; /* InstanceType<Notification> */
 
-// const createSystemTray = () => {
-// 	tray = new Tray(trayIcon);
+const notificationImage = nativeImage.createFromPath('./assets/Original.png')
 
-// 	tray.setToolTip(trayTooltip);
-// 	tray.setContextMenu(contextMenu);
+const createSystemTray = () => {
+  tray = new Tray("./assets/TrayIconTemplate.png");
 
-// 	tray?.on("click", () => {
-// 		if (!win?.isVisible()) {
-// 			win?.show();
-// 		} else {
-// 			if (!win?.isFullScreen()) {
-// 				win?.hide();
-// 			}
-// 		}
-// 	});
-// }
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: "Quit",
+      click: function () {
+        win.destroy();
+        app.quit();
+      },
+    },
+  ]);
+
+  tray.setContextMenu(contextMenu);
+};
 
 const createWindow = () => {
   win = new BrowserWindow({
     backgroundColor: "rgb(36, 37, 45)", // --gray
-    titleBarStyle: "hiddenInset",
-    transparent: true,
+    titleBarStyle: "hidden",
     webPreferences: {
       contextIsolation: true,
       enableRemoteModule: false,
       preload: path.join(__dirname, "preload.js"),
     },
+    show: false,
+    frame: false,
   });
-
   win.setResizable(false);
-
-  win.on("minimize", () => {
-    win.hide();
-  });
-
-  // win.once("ready-to-show", () => {
-  //   win.show();
-  // });
-
+  win.setWindowButtonVisibility(false);
+  win.setVisibleOnAllWorkspaces(true);
+  win.setClosable(false);
   win.loadFile("index.html");
 };
 
 ipcMain.on(FULLSCREEN_BREAK, () => {
+  app.dock.show();
+  win.setAlwaysOnTop(true, "screen-saver");
+  win.setFullScreen(true);
   if (!win.isVisible()) {
     win.show();
     win.focus();
   }
-  win.setAlwaysOnTop(true, "screen-saver");
-  win.setSkipTaskbar(true);
-  win.setFullScreen(true);
-  win.setFullScreenable(false);
-  win.setVisibleOnAllWorkspaces(true);
-  win.setClosable(false);
 });
 
 ipcMain.on(CLOSE_BREAK, () => {
-  win.setAlwaysOnTop(false, "screen-saver");
-  win.setSkipTaskbar(false);
+  win.setAlwaysOnTop(false);
   win.setFullScreen(false);
-  win.setFullScreenable(true);
-  win.setVisibleOnAllWorkspaces(false);
-  win.setClosable(true);
   win.hide();
+  app.dock.hide();
 });
+
+ipcMain.on(NOTIFY_BREAK_STARTING, () => {
+  notification ||= new Notification({
+    title: "It's time for a break",
+    body: "Your break is about to start",
+    icon: notificationImage
+  })
+  notification.show()
+})
+
+app.setActivationPolicy("accessory");
+app.dock.hide();
 
 app.whenReady().then(() => {
   createWindow();
+  createSystemTray();
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
