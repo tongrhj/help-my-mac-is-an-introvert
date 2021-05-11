@@ -1,20 +1,89 @@
-const { app, BrowserWindow, Menu, Tray, Notification, nativeImage, ipcMain } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  Menu,
+  Tray,
+  Notification,
+  nativeImage,
+  ipcMain,
+} = require("electron");
 const path = require("path");
-const { FULLSCREEN_BREAK, CLOSE_BREAK, NOTIFY_BREAK_STARTING } = require("./common");
+const {
+  FULLSCREEN_BREAK,
+  CLOSE_BREAK,
+  NOTIFY_BREAK_STARTING,
+  SNOOZE,
+} = require("./common");
 
 let win; /* InstanceType<BrowserWindow> | null */
 let tray; /* InstanceType<Tray> | null */
 let notification; /* InstanceType<Notification> */
 
-const notificationImage = nativeImage.createFromPath('./assets/Original.png')
+const notificationImage = nativeImage.createFromPath("./assets/Original.png");
+
+const showSnoozeNotification = (count, unit) => {
+  const snoozeNotification = new Notification({
+    title: "Snooze for now",
+    body: `Next break in ${count} ${unit}`,
+    icon: notificationImage,
+  });
+  snoozeNotification.show();
+};
+
+const dispatchSnoozeAction = (count, unit) => {
+  switch (unit) {
+    case "minutes": {
+      win.webContents.send(SNOOZE, count * 1000);
+      break;
+    }
+    case "hour":
+    case "hours": {
+      win.webContents.send(SNOOZE, count * 60 * 1000);
+      break;
+    }
+    case "day": {
+      const endOfDay = new Date().setHours(23, 59, 59, 999);
+      win.webContents.send(SNOOZE, endOfDay.getTime() - new Date().getTime());
+      break;
+    }
+  }
+};
+
+const snoozeMenuTemplate = (
+  count,
+  unit /*: 'minutes' | 'hour' | 'hours' | 'day' */
+) => {
+  return {
+    label: `Snooze for ${count} ${unit}`,
+    click: () => {
+      dispatchSnoozeAction(count, unit);
+      showSnoozeNotification(count, unit);
+    },
+  };
+};
 
 const createSystemTray = () => {
   tray = new Tray("./assets/TrayIconTemplate.png");
 
   const contextMenu = Menu.buildFromTemplate([
     {
+      ...snoozeMenuTemplate(30, "minutes"),
+    },
+    {
+      ...snoozeMenuTemplate(1, "hour"),
+    },
+    {
+      ...snoozeMenuTemplate(2, "hours"),
+    },
+    {
+      ...snoozeMenuTemplate(1, "day"),
+    },
+    {
+      type: "separator",
+    },
+    {
       label: "Quit",
-      click: function () {
+      click: () => {
         win.destroy();
         app.quit();
       },
@@ -61,13 +130,15 @@ ipcMain.on(CLOSE_BREAK, () => {
 });
 
 ipcMain.on(NOTIFY_BREAK_STARTING, () => {
-  notification ||= new Notification({
-    title: "It's time for a break",
-    body: "Your break is about to start",
-    icon: notificationImage
-  })
-  notification.show()
-})
+  if (!notification) {
+    notification = new Notification({
+      title: "It's time for a break",
+      body: "Your break is about to start",
+      icon: notificationImage,
+    });
+  }
+  notification.show();
+});
 
 app.setActivationPolicy("accessory");
 app.dock.hide();

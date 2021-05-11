@@ -12,13 +12,13 @@
 
   const showBreakNotification = () => {
     console.log("Show break notification");
-    window.electron.send("NOTIFY_BREAK_STARTING")
+    window.electron.send("NOTIFY_BREAK_STARTING");
   };
 
-  const doneSound = new Audio('./assets/ping.wav')
+  const doneSound = new Audio("./assets/ping.wav");
 
   const startFocusRound /* number */ = () => {
-    const roundDuration = /* 20 * 60 * 1000 */ 20 * 1000;
+    const roundDuration = 20 * 60 * 1000;
     console.log("Start focus round");
 
     currentRounds = [
@@ -39,10 +39,27 @@
     ];
   };
 
+  const startSnoozeRound = (minutes /*: number */) => {
+    const roundDuration = minutes * 60 * 1000;
+    console.log("Start snooze round");
+
+    currentRounds = [
+      setTimeout(() => {
+        if (currentRounds) {
+          for (const round of currentRounds) {
+            clearTimeout(round);
+          }
+        }
+        currentRounds = [startFocusRound()];
+      }, roundDuration),
+    ];
+  };
+  window.electron.receive("SNOOZE", startSnoozeRound);
+
   const startBreakRound /* number */ = () => {
     breakCountdownManager.openModal();
     console.log("Start break round");
-    const roundDuration = 10 * 1000;
+    const roundDuration = 20 * 1000;
 
     currentRounds = [
       setTimeout(() => {
@@ -58,15 +75,25 @@
         console.log("Break Round timeout");
         currentRounds = [startFocusRound()];
 
-        doneSound.play()
+        doneSound.play();
       }, roundDuration),
     ];
   };
 
+  const skipBtn = document.getElementById("skip");
+  skipBtn.onclick = () => {
+    console.log("skip button clicked");
+    if (currentRounds) {
+      for (const round of currentRounds) {
+        clearTimeout(round);
+      }
+    }
+    breakCountdownManager.closeModal();
+    currentRounds = [startFocusRound()];
+  };
+
   /**
    * TODO:
-   * - Snooze current round for x duration(s)
-   * - Trigger next round immediately
    * - Update countdown time remaining in tray menu
    **/
 
