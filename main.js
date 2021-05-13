@@ -26,6 +26,7 @@ const showSnoozeNotification = (count, unit) => {
     title: "Snooze for now",
     body: `Next break in ${count} ${unit}`,
     icon: notificationImage,
+    silent: true,
   });
   snoozeNotification.show();
 };
@@ -62,21 +63,26 @@ const snoozeMenuTemplate = (
   };
 };
 
-const createSystemTray = () => {
-  tray = new Tray("./assets/TrayIconTemplate.png");
+const createSystemTray = (options = {}) => {
+  const { hideSnooze } = options;
+  tray = tray || new Tray("./assets/TrayIconTemplate.png");
 
   const contextMenu = Menu.buildFromTemplate([
     {
       ...snoozeMenuTemplate(30, "minutes"),
+      enabled: !hideSnooze,
     },
     {
       ...snoozeMenuTemplate(1, "hour"),
+      enabled: !hideSnooze,
     },
     {
       ...snoozeMenuTemplate(2, "hours"),
+      enabled: !hideSnooze,
     },
     {
       ...snoozeMenuTemplate(1, "day"),
+      enabled: !hideSnooze,
     },
     {
       type: "separator",
@@ -116,6 +122,7 @@ ipcMain.on(FULLSCREEN_BREAK, () => {
   app.dock.show();
   win.setAlwaysOnTop(true, "screen-saver");
   win.setFullScreen(true);
+  createSystemTray({ hideSnooze: true });
   if (!win.isVisible()) {
     win.show();
     win.focus();
@@ -125,6 +132,7 @@ ipcMain.on(FULLSCREEN_BREAK, () => {
 ipcMain.on(CLOSE_BREAK, () => {
   win.setAlwaysOnTop(false);
   win.setFullScreen(false);
+  createSystemTray();
   win.hide();
   app.dock.hide();
 });

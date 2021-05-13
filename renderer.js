@@ -27,32 +27,44 @@
         showBreakNotification();
       }, roundDuration - 10 * 1000),
       setTimeout(() => {
-        if (currentRounds) {
+        if (currentRounds && currentRounds.length) {
+          console.log(currentRounds);
           for (const round of currentRounds) {
             clearTimeout(round);
           }
         }
 
         console.log("Focus Round timeout");
-        currentRounds = [startBreakRound()];
+        startBreakRound();
       }, roundDuration),
     ];
+    console.log(currentRounds);
   };
 
   const startSnoozeRound = (minutes /*: number */) => {
     const roundDuration = minutes * 60 * 1000;
     console.log("Start snooze round");
+    if (currentRounds && currentRounds.length) {
+      console.log("Halting all existing rounds");
+      console.log(currentRounds);
+      for (const round of currentRounds) {
+        console.log(`Clearing timeout id ${round}`);
+        clearTimeout(round);
+      }
+    }
 
     currentRounds = [
       setTimeout(() => {
-        if (currentRounds) {
+        if (currentRounds && currentRounds.length) {
+          console.log(currentRounds);
           for (const round of currentRounds) {
             clearTimeout(round);
           }
         }
-        currentRounds = [startFocusRound()];
+        startFocusRound();
       }, roundDuration),
     ];
+    console.log(currentRounds);
   };
   window.electron.receive("SNOOZE", startSnoozeRound);
 
@@ -63,7 +75,8 @@
 
     currentRounds = [
       setTimeout(() => {
-        if (currentRounds) {
+        if (currentRounds && currentRounds.length) {
+          console.log(currentRounds);
           for (const round of currentRounds) {
             clearTimeout(round);
           }
@@ -73,23 +86,26 @@
         breakCountdownManager.closeModal();
 
         console.log("Break Round timeout");
-        currentRounds = [startFocusRound()];
+        startFocusRound();
 
         doneSound.play();
       }, roundDuration),
     ];
+    console.log(currentRounds);
   };
 
   const skipBtn = document.getElementById("skip");
   skipBtn.onclick = () => {
     console.log("skip button clicked");
-    if (currentRounds) {
+    if (currentRounds && currentRounds.length) {
+      console.log(currentRounds);
       for (const round of currentRounds) {
         clearTimeout(round);
       }
     }
     breakCountdownManager.closeModal();
     currentRounds = [startFocusRound()];
+    console.log(currentRounds);
   };
 
   /**
