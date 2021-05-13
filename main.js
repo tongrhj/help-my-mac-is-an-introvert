@@ -6,6 +6,7 @@ const {
   Notification,
   nativeImage,
   ipcMain,
+  shell,
 } = require("electron");
 const path = require("path");
 const {
@@ -15,9 +16,10 @@ const {
   SNOOZE,
 } = require("./common");
 
-let win; /* InstanceType<BrowserWindow> | null */
-let tray; /* InstanceType<Tray> | null */
-let notification; /* InstanceType<Notification> */
+let win; /* InstanceType<BrowserWindow> | undefined */
+let tray; /* InstanceType<Tray> | undefined */
+let notification; /* InstanceType<Notification> | undefined */
+let aboutWindow; /* InstanceType<BrowserWindow> | undefined */
 
 const notificationImage = nativeImage.createFromPath("./assets/Original.png");
 
@@ -69,6 +71,15 @@ const createSystemTray = (options = {}) => {
 
   const contextMenu = Menu.buildFromTemplate([
     {
+      label: "About H!MMIAI",
+      click: () => {
+        aboutWindow.show();
+      },
+    },
+    {
+      type: "separator",
+    },
+    {
       ...snoozeMenuTemplate(30, "minutes"),
       enabled: !hideSnooze,
     },
@@ -118,6 +129,27 @@ const createWindow = () => {
   win.loadFile("index.html");
 };
 
+const createAboutWindow = () => {
+  aboutWindow = new BrowserWindow({
+    titleBarStyle: "hidden",
+    show: false,
+    width: 500,
+    height: 260,
+    webPreferences: {
+      contextIsolation: true,
+      enableRemoteModule: false,
+    },
+    frame: false,
+  });
+  aboutWindow.webContents.setWindowOpenHandler(({ url }) => {
+    // open url in a browser and prevent default
+    shell.openExternal(url);
+    return { action: "deny" };
+  });
+  aboutWindow.setResizable(false);
+  aboutWindow.loadFile("about.html");
+};
+
 ipcMain.on(FULLSCREEN_BREAK, () => {
   app.dock.show();
   win.setAlwaysOnTop(true, "screen-saver");
@@ -154,10 +186,11 @@ app.dock.hide();
 app.whenReady().then(() => {
   createWindow();
   createSystemTray();
+  createAboutWindow();
 
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
-  });
+  // app.on("activate", () => {
+  //   if (BrowserWindow.getAllWindows().length === 0) {
+  //     createWindow();
+  //   }
+  // });
 });

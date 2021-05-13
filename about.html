@@ -1,0 +1,89 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' 'unsafe-inline';"
+    />
+  </head>
+  <body>
+    <div class="centered">
+      <h1>Help! My Mac Is An Introvert</h1>
+      <h4>Version 0.0.1</h4>
+      <p>
+        <a href="https://www.jaredtong.com" target="_blank">Website</a>
+        <span class="divider">|</span>
+        <a href="https://www.github.com/tongrhj/twenty20" target="_blank"
+          >Github</a
+        >
+        <span class="divider">|</span>
+        <a href="https://www.github.com/tongrhj/twenty20/issues" target="_blank"
+          >Support</a
+        >
+      </p>
+      <p>Copyright © <span id="year">2021</span> Jared Tong.</p>
+    </div>
+
+    <script>
+      (() => {
+        const year = new Date().getFullYear();
+        const yearText = document.getElementById("year");
+        if (yearText !== year) {
+          document.textContent = year;
+        }
+      })();
+    </script>
+
+    <style>
+      :root {
+        --spacing: 1rem;
+        --body-text-size: 14px;
+      }
+      /* START Make app feel native to MacOS */
+      html {
+        font-size: var(--body-text-size);
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      *,
+      a,
+      button {
+        cursor: default;
+        user-select: none;
+      }
+      body {
+        -webkit-app-region: drag;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: #333;
+          color: white;
+        }
+      }
+
+      @media (prefers-color-scheme: light) {
+        body {
+          background: #ddd;
+          color: black;
+        }
+      }
+      /* END Make app feel native to MacOS */
+
+      body {
+        padding: calc(var(--spacing) * 2);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+      .centered {
+        text-align: center;
+      }
+    </style>
+  </body>
+</html>
