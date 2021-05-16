@@ -4,18 +4,60 @@
   "description": "forces you to give your eyes a break every 20 minutes",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --ignore-path .gitignore . && prettier --config .prettierrc.json --ignore-path .gitignore --check \"**/*.{js,json,ts,md,html}\"",
-    "fix": "eslint --ignore-path .gitignore --fix . && prettier --config .prettierrc.json --ignore-path .gitignore --write \"**/*.{js,json,ts,md,html}\""
+    "fix": "eslint --ignore-path .gitignore --fix . && prettier --config .prettierrc.json --ignore-path .gitignore --write \"**/*.{js,json,ts,md,html}\"",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
-  "author": "",
+  "author": "Jared Tong <tongrhj@users.noreply.github.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tongrhj/twenty20.git"
+  },
   "devDependencies": {
-    "electron": "^12.0.6",
-    "eslint": "^7.25.0",
+    "@electron-forge/cli": "^6.0.0-beta.54",
+    "@electron-forge/maker-deb": "^6.0.0-beta.54",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
+    "@electron-forge/maker-zip": "^6.0.0-beta.54",
+    "electron": "^12.0.7",
+    "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
-    "prettier": "^2.2.1"
+    "prettier": "^2.3.0"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0",
+    "update-electron-app": "^2.0.1"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "twenty20"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
   }
 }
