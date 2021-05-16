@@ -28,8 +28,8 @@ const showSnoozeNotification = (count, unit) => {
     title: "Snooze for now",
     body:
       unit === "day"
-        ? `No interruptions till tomorrow onwards`
-        : `Next break in ${count} ${unit}`,
+        ? `Your Mac will not take a break till tomorrow`
+        : `Your Mac's next break is in ${count} ${unit}`,
     icon: notificationImage,
     silent: true,
   });
@@ -143,7 +143,7 @@ const createAboutWindow = () => {
     titleBarStyle: "hidden",
     show: false,
     width: 500,
-    height: 260,
+    height: 250,
     frame: false,
     resizable: false,
     minimizable: false,

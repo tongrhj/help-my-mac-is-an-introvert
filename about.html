@@ -38,6 +38,11 @@
       :root {
         --spacing: 1rem;
         --body-text-size: 14px;
+        --color-text-link: rgb(88, 166, 255);
+        --color-dark-grey: #333;
+        --color-white: white;
+        --color-black: black;
+        --color-off-white: #ddd;
       }
       /* START Make app feel native to MacOS */
       html {
@@ -60,15 +65,15 @@
       }
       @media (prefers-color-scheme: dark) {
         body {
-          background: #333;
-          color: white;
+          background: var(--color-dark-grey);
+          color: var(--color-white);
         }
       }
 
       @media (prefers-color-scheme: light) {
         body {
-          background: #ddd;
-          color: black;
+          background: var(--color-off-white);
+          color: var(--color-black);
         }
       }
       /* END Make app feel native to MacOS */
@@ -83,6 +88,12 @@
       }
       .centered {
         text-align: center;
+      }
+      a,
+      a:hover,
+      a:visited {
+        color: var(--color-text-link);
+        cursor: pointer;
       }
     </style>
   </body>

@@ -1,7 +1,7 @@
 {
-  "name": "twenty20",
+  "name": "help-my-mac-is-an-introvert",
   "version": "0.1.0",
-  "description": "forces you to give your eyes a break every 20 minutes",
+  "description": "Take a break every 20 minutes! For macOS",
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
@@ -15,7 +15,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tongrhj/twenty20.git"
+    "url": "https://github.com/tongrhj/help-my-mac-is-an-introvert.git"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
