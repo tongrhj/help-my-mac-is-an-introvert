@@ -26,7 +26,10 @@ const notificationImage = nativeImage.createFromPath("./assets/Original.png");
 const showSnoozeNotification = (count, unit) => {
   const snoozeNotification = new Notification({
     title: "Snooze for now",
-    body: `Next break in ${count} ${unit}`,
+    body:
+      unit === "day"
+        ? `No interruptions till tomorrow onwards`
+        : `Next break in ${count} ${unit}`,
     icon: notificationImage,
     silent: true,
   });
@@ -45,8 +48,8 @@ const dispatchSnoozeAction = (count, unit) => {
       break;
     }
     case "day": {
-      const endOfDay = new Date().setHours(23, 59, 59, 999);
-      win.webContents.send(SNOOZE, endOfDay.getTime() - new Date().getTime());
+      const endOfDay = new Date().setHours(23, 59, 59);
+      win.webContents.send(SNOOZE, endOfDay - new Date().getTime());
       break;
     }
   }
@@ -73,7 +76,11 @@ const createSystemTray = (options = {}) => {
     {
       label: "About H!MMIAI",
       click: () => {
-        aboutWindow.show();
+        if (aboutWindow) {
+          aboutWindow.show();
+        } else {
+          createAboutWindow();
+        }
       },
     },
     {
@@ -100,8 +107,10 @@ const createSystemTray = (options = {}) => {
     },
     {
       label: "Quit",
+      accelerator: "Command+Q",
       click: () => {
-        win.destroy();
+        if (win) win.destroy();
+        if (aboutWindow) aboutWindow.destroy();
         app.quit();
       },
     },
@@ -112,42 +121,54 @@ const createSystemTray = (options = {}) => {
 
 const createWindow = () => {
   win = new BrowserWindow({
-    backgroundColor: "rgb(36, 37, 45)", // --gray
+    backgroundColor: "#24252D", // --gray
     titleBarStyle: "hidden",
     webPreferences: {
-      contextIsolation: true,
-      enableRemoteModule: false,
+      devTools: false,
       preload: path.join(__dirname, "preload.js"),
     },
     show: false,
     frame: false,
+    resizable: false,
+    closable: false,
   });
-  win.setResizable(false);
   win.setWindowButtonVisibility(false);
-  win.setVisibleOnAllWorkspaces(true);
-  win.setClosable(false);
+  win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   win.loadFile("index.html");
 };
 
 const createAboutWindow = () => {
   aboutWindow = new BrowserWindow({
+    backgroundColor: "#24252D", // --gray
     titleBarStyle: "hidden",
     show: false,
     width: 500,
     height: 260,
-    webPreferences: {
-      contextIsolation: true,
-      enableRemoteModule: false,
-    },
     frame: false,
+    resizable: false,
+    minimizable: false,
+    fullscreenable: false,
+    maximizable: false,
+    closable: true,
+    autoHideMenuBar: true,
+    webPreferences: {
+      devTools: false,
+    },
   });
   aboutWindow.webContents.setWindowOpenHandler(({ url }) => {
     // open url in a browser and prevent default
     shell.openExternal(url);
     return { action: "deny" };
   });
-  aboutWindow.setResizable(false);
   aboutWindow.loadFile("about.html");
+  aboutWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+  aboutWindow.once("ready-to-show", () => {
+    aboutWindow.show();
+    aboutWindow.setVisibleOnAllWorkspaces(false, { visibleOnFullScreen: true });
+  });
+  aboutWindow.on("closed", () => {
+    aboutWindow = undefined;
+  });
 };
 
 ipcMain.on(FULLSCREEN_BREAK, () => {
@@ -180,17 +201,16 @@ ipcMain.on(NOTIFY_BREAK_STARTING, () => {
   notification.show();
 });
 
-app.setActivationPolicy("accessory");
-app.dock.hide();
+Menu.setApplicationMenu(null); // Suppress placeholder menu from Electron
 
 app.whenReady().then(() => {
-  createWindow();
+  app.setActivationPolicy("accessory");
+  app.dock.hide();
   createSystemTray();
-  createAboutWindow();
 
-  // app.on("activate", () => {
-  //   if (BrowserWindow.getAllWindows().length === 0) {
-  //     createWindow();
-  //   }
-  // });
+  createWindow();
+  // createAboutWindow();
+  require("update-electron-app")({
+    updateInterval: "6 hours",
+  });
 });
