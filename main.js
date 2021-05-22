@@ -21,7 +21,7 @@ let tray; /* InstanceType<Tray> | undefined */
 let notification; /* InstanceType<Notification> | undefined */
 let aboutWindow; /* InstanceType<BrowserWindow> | undefined */
 
-const notificationImage = nativeImage.createFromPath("./assets/Original.png");
+const appIcon = nativeImage.createFromPath("./assets/Original.png");
 
 const showSnoozeNotification = (count, unit) => {
   const snoozeNotification = new Notification({
@@ -30,7 +30,7 @@ const showSnoozeNotification = (count, unit) => {
       unit === "day"
         ? `Your Mac will not take a break till tomorrow`
         : `Your Mac's next break is in ${count} ${unit}`,
-    icon: notificationImage,
+    icon: appIcon,
     silent: true,
   });
   snoozeNotification.show();
@@ -195,7 +195,7 @@ ipcMain.on(NOTIFY_BREAK_STARTING, () => {
     notification = new Notification({
       title: "It's time for a break",
       body: "Your break is about to start",
-      icon: notificationImage,
+      icon: appIcon,
     });
   }
   notification.show();
@@ -204,6 +204,7 @@ ipcMain.on(NOTIFY_BREAK_STARTING, () => {
 Menu.setApplicationMenu(null); // Suppress placeholder menu from Electron
 
 app.whenReady().then(() => {
+  app.dock.setIcon(appIcon);
   app.setActivationPolicy("accessory");
   app.dock.hide();
   createSystemTray();
