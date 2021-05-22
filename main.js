@@ -126,9 +126,13 @@ const createSystemTray = (options = {}) => {
     {
       label: "Start H!MMIAI on login",
       type: "checkbox",
-      checked: store.get("autoStart"),
+      checked: store.get("openAtLogin"),
       click: () => {
-        store.set("autoStart", !store.get("autoStart"));
+        const setting = !store.get("openAtLogin");
+        store.set("openAtLogin", setting);
+        app.setLoginItemSettings({
+          openAtLogin: setting,
+        });
       },
     },
     {
@@ -242,18 +246,19 @@ Menu.setApplicationMenu(null); // Suppress placeholder menu from Electron
 
 app.setName("Help! My Mac is an Introvert");
 app.whenReady().then(() => {
-  autoUpdater = require("update-electron-app")({
-    startChecksOnInit: false,
-    updateInterval: "6 hours",
-  });
-
   app.dock.setIcon(appIcon);
   app.setActivationPolicy("accessory");
   app.dock.hide();
   createSystemTray();
 
   createWindow();
-  if (store.get("autoUpdate") && autoUpdater) {
+  if (store.get("autoUpdate")) {
+    autoUpdater = require("update-electron-app")({
+      startChecksOnInit: false,
+      updateInterval: "6 hours",
+    });
+    if (!autoUpdater) return;
+
     try {
       autoUpdater.check();
       intervalId = autoUpdater.startChecks();
