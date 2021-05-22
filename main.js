@@ -14,6 +14,8 @@ const {
   CLOSE_BREAK,
   NOTIFY_BREAK_STARTING,
   SNOOZE,
+  APP_VERSION,
+  COPYRIGHT,
 } = require("./common");
 const Store = require("electron-store");
 

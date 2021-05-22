@@ -13,7 +13,8 @@
     "prepare": "husky install"
   },
   "author": "Jared Tong <tongrhj@users.noreply.github.com>",
-  "license": "MIT",
+  "license": "UNLICENSED",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/tongrhj/help-my-mac-is-an-introvert.git"
