@@ -21,7 +21,7 @@ let tray; /* InstanceType<Tray> | undefined */
 let notification; /* InstanceType<Notification> | undefined */
 let aboutWindow; /* InstanceType<BrowserWindow> | undefined */
 
-const appIcon = nativeImage.createFromPath("./assets/Original.png");
+const appIcon = nativeImage.createFromPath("./assets/MyIcon.iconset/icon_512x512.png");
 
 const showSnoozeNotification = (count, unit) => {
   const snoozeNotification = new Notification({
