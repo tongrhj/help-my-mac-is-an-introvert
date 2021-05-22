@@ -39,7 +39,20 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "assets/MyIcon.icns"
+        "name": "Help! My Mac is an Introvert",
+        "appCopyright": "Jared Tong",
+        "icon": "assets/MyIcon.icns",
+        "ignore": [
+          ".+.test.js",
+          ".*.env",
+          ".husky",
+          ".eslintcache",
+          ".eslintrc.json",
+          ".prettierrc.json",
+          ".gitignore",
+          "README.md",
+          "package-lock.json"
+        ]
       },
       "makers": [
         {

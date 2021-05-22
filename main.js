@@ -22,7 +22,7 @@ let notification; /* InstanceType<Notification> | undefined */
 let aboutWindow; /* InstanceType<BrowserWindow> | undefined */
 
 const appIcon = nativeImage.createFromPath(
-  "./assets/MyIcon.iconset/icon_512x512.png"
+  path.join(__dirname, "assets/MyIcon.iconset/icon_512x512.png")
 );
 
 const showSnoozeNotification = (count, unit) => {
@@ -72,7 +72,7 @@ const snoozeMenuTemplate = (
 
 const createSystemTray = (options = {}) => {
   const { hideSnooze } = options;
-  tray = tray || new Tray("./assets/introvert.png");
+  tray = tray || new Tray(path.join(__dirname, "assets/introvert.png"));
 
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -136,7 +136,7 @@ const createWindow = () => {
   });
   win.setWindowButtonVisibility(false);
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
-  win.loadFile("index.html");
+  win.loadFile(path.join(__dirname, "index.html"));
 };
 
 const createAboutWindow = () => {
@@ -162,7 +162,7 @@ const createAboutWindow = () => {
     shell.openExternal(url);
     return { action: "deny" };
   });
-  aboutWindow.loadFile("about.html");
+  aboutWindow.loadFile(path.join(__dirname, "about.html"));
   aboutWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   aboutWindow.once("ready-to-show", () => {
     aboutWindow.show();
@@ -205,6 +205,7 @@ ipcMain.on(NOTIFY_BREAK_STARTING, () => {
 
 Menu.setApplicationMenu(null); // Suppress placeholder menu from Electron
 
+app.setName('Help! My Mac is an Introvert');
 app.whenReady().then(() => {
   app.dock.setIcon(appIcon);
   app.setActivationPolicy("accessory");
