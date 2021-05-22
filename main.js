@@ -100,6 +100,11 @@ const createSystemTray = (options = {}) => {
       type: "separator",
     },
     {
+      ...snoozeMenuTemplate(20, "minutes"),
+      label: "Just took a break",
+      enabled: !hideSnooze,
+    },
+    {
       ...snoozeMenuTemplate(30, "minutes"),
       enabled: !hideSnooze,
     },
