@@ -15,11 +15,20 @@ const {
   NOTIFY_BREAK_STARTING,
   SNOOZE,
 } = require("./common");
+const Store = require("electron-store");
+
+const schema = {
+  autoStart: { type: "boolean", default: false },
+  autoUpdate: { type: "boolean", default: true },
+};
+const store = new Store({ schema });
 
 let win; /* InstanceType<BrowserWindow> | undefined */
 let tray; /* InstanceType<Tray> | undefined */
 let notification; /* InstanceType<Notification> | undefined */
 let aboutWindow; /* InstanceType<BrowserWindow> | undefined */
+let intervalId; /* ReturnType<typeof setInterval> */
+let autoUpdater; /* void (in dev) | updateElectronApp.IUpdater */
 
 const appIcon = nativeImage.createFromPath(
   path.join(__dirname, "assets/MyIcon.iconset/icon_512x512.png")
@@ -72,7 +81,7 @@ const snoozeMenuTemplate = (
 
 const createSystemTray = (options = {}) => {
   const { hideSnooze } = options;
-  tray = tray || new Tray(path.join(__dirname, "assets/introvert.png"));
+  tray = tray || new Tray(path.join(__dirname, "assets/TrayTemplate.png"));
 
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -103,6 +112,25 @@ const createSystemTray = (options = {}) => {
     {
       ...snoozeMenuTemplate(1, "day"),
       enabled: !hideSnooze,
+    },
+    {
+      type: "separator",
+    },
+    {
+      label: "Start H!MMIAI on login",
+      type: "checkbox",
+      checked: store.get("autoStart"),
+      click: () => {
+        store.set("autoStart", !store.get("autoStart"));
+      },
+    },
+    {
+      label: "Automatically check for updates",
+      type: "checkbox",
+      checked: store.get("autoUpdate"),
+      click: () => {
+        store.set("autoUpdate", !store.get("autoUpdate"));
+      },
     },
     {
       type: "separator",
@@ -205,16 +233,34 @@ ipcMain.on(NOTIFY_BREAK_STARTING, () => {
 
 Menu.setApplicationMenu(null); // Suppress placeholder menu from Electron
 
-app.setName('Help! My Mac is an Introvert');
+app.setName("Help! My Mac is an Introvert");
 app.whenReady().then(() => {
+  autoUpdater = require("update-electron-app")({
+    startChecksOnInit: false,
+    updateInterval: "6 hours",
+  });
+
   app.dock.setIcon(appIcon);
   app.setActivationPolicy("accessory");
   app.dock.hide();
   createSystemTray();
 
   createWindow();
-  // createAboutWindow();
-  require("update-electron-app")({
-    updateInterval: "6 hours",
-  });
+  if (store.get("autoUpdate") && autoUpdater) {
+    try {
+      autoUpdater.check();
+      intervalId = autoUpdater.startChecks();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+});
+
+store.onDidChange("autoUpdate", (newValue) => {
+  if (!autoUpdater) return;
+  if (newValue) {
+    intervalId = autoUpdater.startChecks();
+  } else {
+    autoUpdater.stopChecks(intervalId);
+  }
 });
