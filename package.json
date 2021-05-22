@@ -43,7 +43,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "twenty20"
+            "name": "help-my-mac-is-an-introvert"
           }
         },
         {
