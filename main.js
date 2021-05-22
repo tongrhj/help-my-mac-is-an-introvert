@@ -251,6 +251,13 @@ app.whenReady().then(() => {
   app.dock.hide();
   createSystemTray();
 
+  app.setAboutPanelOptions({
+    applicationName: "Help! My Mac is an Introvert",
+    applicationVersion: APP_VERSION,
+    copyright: COPYRIGHT,
+    version: APP_VERSION,
+  });
+
   createWindow();
   if (store.get("autoUpdate")) {
     autoUpdater = require("update-electron-app")({
