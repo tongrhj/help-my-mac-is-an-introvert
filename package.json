@@ -45,7 +45,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "help-my-mac-is-an-introvert"
+            "name": "Help! My Mac is an Introvert"
           }
         },
         {
