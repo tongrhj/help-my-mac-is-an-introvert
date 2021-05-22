@@ -118,13 +118,14 @@ const createSystemTray = (options = {}) => {
     },
     {
       ...snoozeMenuTemplate(1, "day"),
+      label: "Snooze until tomorrow",
       enabled: !hideSnooze,
     },
     {
       type: "separator",
     },
     {
-      label: "Start H!MMIAI on login",
+      label: "Start on login",
       type: "checkbox",
       checked: store.get("openAtLogin"),
       click: () => {
@@ -136,7 +137,7 @@ const createSystemTray = (options = {}) => {
       },
     },
     {
-      label: "Automatically check for updates",
+      label: "Check for updates",
       type: "checkbox",
       checked: store.get("autoUpdate"),
       click: () => {
