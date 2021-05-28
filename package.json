@@ -41,44 +41,7 @@
     "update-electron-app": "https://github.com/tongrhj/update-electron-app.git"
   },
   "config": {
-    "forge": {
-      "packagerConfig": {
-        "name": "Help! My Mac is an Introvert",
-        "appCopyright": "Jared Tong",
-        "icon": "assets/MyIcon.icns",
-        "ignore": [
-          ".+.test.js",
-          ".*.env",
-          ".husky",
-          ".eslintcache",
-          ".gitignore",
-          "README.md",
-          ".*.provisionprofile"
-        ]
-      },
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "help-my-mac-is-an-introvert"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
-    }
+    "forge": "./forge.config.js"
   },
   "lint-staged": {
     "*.js": "eslint --cache --fix"
