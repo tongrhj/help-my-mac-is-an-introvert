@@ -1,4 +1,4 @@
-# Help! My Mac Is An Introvert (H!MMIAI)
+# Super Cozy Catnap Time (SCCT)
 
 > Your Mac will take a 20 second break every 20 minutes. You should too.
 

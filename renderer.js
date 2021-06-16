@@ -14,8 +14,6 @@
     window.electron.send("NOTIFY_BREAK_STARTING");
   };
 
-  const doneSound = new Audio(window.electron.notificationFile());
-
   const startFocusRound /* number */ = () => {
     const roundDuration = 20 * 60 * 1000;
 
@@ -71,10 +69,14 @@
 
         breakCountdownManager.closeModal();
         startFocusRound();
-        doneSound.play();
+        window.electron.send("TRIGGER_BREAK_END_SOUND");
       }, roundDuration),
     ];
   };
+  window.electron.receive("PLAY_BREAK_END_SOUND", (pathToAudio) => {
+    const breakEndSound = new Audio(pathToAudio);
+    breakEndSound.play();
+  });
 
   const skipBtn = document.getElementById("skip");
   skipBtn.onclick = () => {

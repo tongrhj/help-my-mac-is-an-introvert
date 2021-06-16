@@ -13,6 +13,8 @@ const {
   FULLSCREEN_BREAK,
   CLOSE_BREAK,
   NOTIFY_BREAK_STARTING,
+  TRIGGER_BREAK_END_SOUND,
+  PLAY_BREAK_END_SOUND,
   SNOOZE,
   APP_VERSION,
   COPYRIGHT,
@@ -31,6 +33,7 @@ let notification; /* InstanceType<Notification> | undefined */
 let aboutWindow; /* InstanceType<BrowserWindow> | undefined */
 let intervalId; /* ReturnType<typeof setInterval> */
 let autoUpdater; /* void (in dev) | updateElectronApp.IUpdater */
+let pingSoundFile;
 
 const appIcon = nativeImage.createFromPath(
   path.join(__dirname, "assets/MyIcon.iconset/icon_512x512.png")
@@ -87,7 +90,7 @@ const createSystemTray = (options = {}) => {
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: "About H!MMIAI",
+      label: "About SCCT",
       click: () => {
         if (aboutWindow) {
           aboutWindow.show();
@@ -243,9 +246,14 @@ ipcMain.on(NOTIFY_BREAK_STARTING, () => {
   notification.show();
 });
 
+ipcMain.on(TRIGGER_BREAK_END_SOUND, () => {
+  (pingSoundFile = pingSoundFile || path.join(__dirname, "assets/ping.wav")),
+    win.webContents.send(PLAY_BREAK_END_SOUND, pingSoundFile);
+});
+
 Menu.setApplicationMenu(null); // Suppress placeholder menu from Electron
 
-app.setName("Help! My Mac is an Introvert");
+app.setName("Super Cozy Catnap Time");
 app.whenReady().then(() => {
   app.dock.setIcon(appIcon);
   app.setActivationPolicy("accessory");
@@ -253,7 +261,7 @@ app.whenReady().then(() => {
   createSystemTray();
 
   app.setAboutPanelOptions({
-    applicationName: "Help! My Mac is an Introvert",
+    applicationName: "Super Cozy Catnap Time",
     applicationVersion: APP_VERSION,
     copyright: COPYRIGHT,
     version: APP_VERSION,
