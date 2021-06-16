@@ -1,37 +1,42 @@
+require("dotenv").config();
+
 const APP_BUNDLE_ID = "com.jaredtong.super-cozy-introvert-party";
 const IDENTITY = "NTVN7FLWTR";
 
 const config = {
   packagerConfig: {
-    name: "Super Cozy Introvert Party Time",
-    asar: true,
-    appBundleId: APP_BUNDLE_ID,
-    appCategoryType: "public.app-category.utilities",
+    name: "Super Cozy Catnap Time",
     appCopyright: "Jared Tong",
     icon: "assets/MyIcon.icns",
     ignore: [
       ".+.test.js",
       ".*.env",
+      ".env",
       ".husky",
       ".eslintcache",
       ".gitignore",
       "README.md",
       ".*.provisionprofile",
     ],
+    appCategoryType: "public.app-category.developer-tools",
     osxSign: {
-      identity: `Developer ID Application: Jared Tong (${IDENTITY})`,
+      identity: "Developer ID Application: Jared Tong (NTVN7FLWTR)",
       hardenedRuntime: true,
-      "gatekeeper-assess": false,
-      entitlements: "static/entitlements.plist",
-      "entitlements-inherit": "static/entitlements.plist",
+      entitlements: "entitlements.plist",
+      "entitlements-inherit": "entitlements.plist",
       "signature-flags": "library",
+      "gatekeeper-assess": false,
+    },
+    osxNotarize: {
+      appleId: process.env.APPLE_ID,
+      appleIdPassword: process.env.APPLE_ID_PASSWORD,
     },
   },
   makers: [
     {
       name: "@electron-forge/maker-zip",
       platforms: ["darwin"],
-      architectures: ["x64", "arm64"],
+      arch: ["x64", "arm64"],
     },
   ],
   publishers: [
@@ -51,10 +56,9 @@ const config = {
 
 function notarizeMaybe() {
   if (!process.env.APPLE_ID || !process.env.APPLE_ID_PASSWORD) {
-    console.warn(
+    throw new Error(
       "Should be notarizing, but environment variables APPLE_ID or APPLE_ID_PASSWORD are missing!"
     );
-    return;
   }
 
   config.packagerConfig.osxNotarize = {

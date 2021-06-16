@@ -17,12 +17,11 @@ contextBridge.exposeInMainWorld("electron", {
     }
   },
   receive: (channel, fn) => {
-    let validChannels = [channels.SNOOZE];
+    let validChannels = [channels.SNOOZE, channels.PLAY_BREAK_END_SOUND];
     if (validChannels.includes(channel)) {
       ipcRenderer.on(channel, (event, ...args) => fn(...args));
     }
   },
-  notificationFile: () => path.join(__dirname, "assets/ping.wav"),
 });
 
 window.channels = channels;
