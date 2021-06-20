@@ -15,8 +15,13 @@
   };
 
   const startFocusRound /* number */ = () => {
-    const roundDuration = 20 * 60 * 1000;
+    if (currentRounds && currentRounds.length) {
+      for (const round of currentRounds) {
+        clearTimeout(round);
+      }
+    }
 
+    const roundDuration = 20 * 60 * 1000;
     currentRounds = [
       setTimeout(() => {
         showBreakNotification();
@@ -86,7 +91,7 @@
       }
     }
     breakCountdownManager.closeModal();
-    currentRounds = [startFocusRound()];
+    startFocusRound();
   };
 
   /**
