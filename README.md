@@ -12,6 +12,14 @@ to prevent eye strain and computer vision syndrome from prolonged screen use.
 
 ## Usage
 
-```
+```bash
 npm run start
+```
+
+## Release
+
+```bash
+# Set APPLE_ID and APPLE_ID_PASSWORD in .env
+npm run package
+npm run publish
 ```

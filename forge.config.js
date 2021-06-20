@@ -1,3 +1,4 @@
+const path = require("path");
 require("dotenv").config();
 
 const APP_BUNDLE_ID = "com.jaredtong.super-cozy-introvert-party";
@@ -7,7 +8,8 @@ const config = {
   packagerConfig: {
     name: "Super Cozy Catnap Time",
     appCopyright: "Jared Tong",
-    icon: "assets/MyIcon.icns",
+    asar: true,
+    icon: path.resolve(__dirname, "assets", "MyIcon.icns"),
     ignore: [
       ".+.test.js",
       ".*.env",
