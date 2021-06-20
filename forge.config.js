@@ -36,7 +36,7 @@ const config = {
   },
   makers: [
     {
-      name: "@electron-forge/maker-zip",
+      name: "@electron-forge/maker-dmg",
       platforms: ["darwin"],
       arch: ["x64", "arm64"],
     },
